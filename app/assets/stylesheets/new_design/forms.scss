@@ -69,6 +69,7 @@
 
     &:disabled {
       background-color: $border-grey;
+      cursor: default;
     }
   }
 

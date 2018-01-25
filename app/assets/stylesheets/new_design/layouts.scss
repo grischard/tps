@@ -30,3 +30,8 @@
     }
   }
 }
+
+.one-column-centered {
+  margin: auto;
+  max-width: $page-width / 2;
+}
