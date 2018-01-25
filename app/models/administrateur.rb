@@ -11,6 +11,17 @@ class Administrateur < ActiveRecord::Base
 
   scope :inactive, -> { where(active: false) }
 
+  validate :password_complexity
+
+  def password_complexity
+    if password.present?
+      score = Zxcvbn.test(password, [], ZXCVBN_DICTIONNARIES).score
+      if score < 4
+        errors.add :password, :not_strength
+      end
+    end
+  end
+
   def self.find_inactive_by_token(reset_password_token)
     self.inactive.with_reset_password_token(reset_password_token)
   end
