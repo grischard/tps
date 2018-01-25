@@ -99,6 +99,8 @@ gem 'scenic'
 
 gem 'sanitize-url'
 
+gem 'zxcvbn-ruby', require: 'zxcvbn'
+
 # Cron jobs
 gem 'delayed_job_active_record'
 gem "daemons"
