@@ -4,6 +4,8 @@ class Gestionnaire < ActiveRecord::Base
 
   has_and_belongs_to_many :administrateurs
 
+  validates :email, format: { with: Devise.email_regexp, message: "n'est pas valide" }
+
   has_many :assign_to, dependent: :destroy
   has_many :procedures, through: :assign_to
   has_many :dossiers, -> { state_not_brouillon }, through: :procedures
