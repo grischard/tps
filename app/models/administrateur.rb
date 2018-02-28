@@ -1,13 +1,18 @@
 class Administrateur < ActiveRecord::Base
+  include CredentialsSyncableConcern
+  include EmailSanitizableConcern
+
   devise :database_authenticatable, :registerable,
     :recoverable, :rememberable, :trackable, :validatable
 
   has_and_belongs_to_many :gestionnaires
   has_many :procedures
 
+  before_validation -> { sanitize_email(:email) }
   before_save :ensure_api_token
 
-  include CredentialsSyncableConcern
+  validates_presence_of :email
+  validates :email, format: { with: Devise.email_regexp, message: "n'est pas valide" }, allow_nil: true
 
   scope :inactive, -> { where(active: false) }
 
