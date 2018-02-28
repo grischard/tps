@@ -1,8 +1,13 @@
 class Gestionnaire < ActiveRecord::Base
+  include CredentialsSyncableConcern
+  include EmailSanitizableConcern
+
   devise :database_authenticatable, :registerable,
     :recoverable, :rememberable, :trackable, :validatable
 
   has_and_belongs_to_many :administrateurs
+
+  before_validation -> { sanitize_email(:email) }
 
   validates :email, format: { with: Devise.email_regexp, message: "n'est pas valide" }
 
@@ -13,8 +18,6 @@ class Gestionnaire < ActiveRecord::Base
   has_many :followed_dossiers, through: :follows, source: :dossier
   has_many :avis
   has_many :dossiers_from_avis, through: :avis, source: :dossier
-
-  include CredentialsSyncableConcern
 
   def visible_procedures
     procedures.publiees_ou_archivees
