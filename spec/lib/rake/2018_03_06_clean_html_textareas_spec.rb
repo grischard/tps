@@ -1,0 +1,24 @@
+require 'spec_helper'
+
+describe '2018_03_06_clean_html_textareas#clean' do
+  let(:procedure) { create(:procedure) }
+  let(:type_champ) { create(:type_de_champ, procedure: procedure, type_champ: :textarea) }
+  let(:champ) { type_champ.champ.create(value: "<p>Gnahar<br>greu bouahaha</p>") }
+  let(:champ_date) { Time.local(1995) }
+  let(:rake_date) { Time.local(2018) }
+
+  before do
+    Timecop.freeze(champ_date) { champ }
+    TPS::Application.load_tasks
+    Timecop.freeze(rake_date) { Rake::Task['2018_03_06_clean_html_textareas:clean'].invoke }
+    champ.reload
+  end
+
+  it 'cleans up html tags' do
+    expect(champ.value).to eq("Gnahar\ngreu bouahaha\n")
+  end
+
+  it 'does not change the model’s dates' do
+    expect(champ.updated_at).to eq(champ_date)
+  end
+end
